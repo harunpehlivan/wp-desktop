@@ -28,7 +28,7 @@ module.exports = function( finished_cb ) {
 		debug( 'Starting window handlers' );
 
 		// Stuff that needs a mainWindow handle
-		require( './window-handlers/failed-to-load' )( mainWindow );
+		//require( './window-handlers/failed-to-load' )( mainWindow );
 		require( './window-handlers/login-status' )( mainWindow );
 		require( './window-handlers/notifications' )( mainWindow );
 		require( './window-handlers/external-links' )( mainWindow.webContents );

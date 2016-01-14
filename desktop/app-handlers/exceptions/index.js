@@ -6,6 +6,7 @@
 const electron = require( 'electron' );
 const app = electron.app;
 const dialog = electron.dialog;
+const debug = require( 'debug' )( 'desktop:exceptions' );
 
 /**
  * Internal dependencies
@@ -33,9 +34,13 @@ function isFatalError( error ) {
 }
 
 function exceptionHandler( error ) {
+
 	if ( ! isFatalError( error ) ) {
+		debug( 'ignoring uncaught network error', error );
 		return;
 	}
+
+	debug( 'uncaught exception', error );
 
 	crashTracker.track( 'exception', { name: error.name, message: error.message, stack: error.stack }, function() {
 		if ( isReady && ! thereCanBeOnlyOne ) {
@@ -62,7 +67,6 @@ module.exports = function() {
 		isReady = true;
 	} );
 
-	if ( config.isRelease() ) {
-		process.on( 'uncaughtException', exceptionHandler );
-	}
+	process.on( 'uncaughtException', exceptionHandler );
+
 };

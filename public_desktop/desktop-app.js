@@ -9,7 +9,7 @@ var ipc;
 var gGebug;
 var desktop;
 var debug;
-var booted = false;
+var offlineWhenBooted = false;
 var spellchecker;
 var webFrame;
 
@@ -97,7 +97,7 @@ function startDesktopApp() {
 
 	function startCalypso() {
 		debug( 'Calypso loaded, starting' );
-		booted = true;
+		offlineWhenBooted = ! navigator.onLine;
 		window.AppBoot();
 
 		document.addEventListener( 'keydown', keyboardHandler );
@@ -107,23 +107,19 @@ function startDesktopApp() {
 	// This is called by Calypso
 	startApp = function() {
 		window.addEventListener( 'online', function() {
-			if ( booted === false ) {
+			if ( offlineWhenBooted ) {
 				document.location.reload();
 			}
 		} );
 
 		document.documentElement.classList.add( 'build-' + desktop.config.build );
 
-		if ( navigator.onLine ) {
-			startCalypso();
+		startCalypso();
 
-			if ( calysoHasLoaded() ) {
-				postCalypso();
-			} else {
-				checkForCalypso();
-			}
+		if ( calysoHasLoaded() ) {
+			postCalypso();
 		} else {
-			showNoConnection();
+			checkForCalypso();
 		}
 	}
 }
